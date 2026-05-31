@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { Home, ClipboardList, PackageSearch, PieChart, Truck, FileText, Users, DollarSign } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Home, ClipboardList, PackageSearch, Truck } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/aslap", label: "Home", icon: Home },
@@ -9,23 +13,39 @@ const navItems = [
 ];
 
 export function BottomNav() {
+  const pathname = usePathname();
+
   return (
-    <nav className="fixed bottom-0 w-full bg-white border-t border-gray-200 pb-safe">
-      <div className="flex justify-around items-center h-16">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-blue-600 active:text-blue-700 transition-colors"
-            >
-              <Icon className="w-6 h-6 mb-1" />
-              <span className="text-[10px] font-medium">{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+    <div className="fixed bottom-4 left-4 right-4 z-50">
+      <nav className="bg-white/90 backdrop-blur-md border border-edusync-border/60 rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.06)] px-4 py-2">
+        <div className="flex justify-around items-center h-14">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center justify-center w-full h-full relative"
+              >
+                <div 
+                  className={cn(
+                    "flex flex-col items-center justify-center p-1 px-3 rounded-full transition-all duration-200 active:scale-90",
+                    isActive ? "text-edusync-blue bg-edusync-blue/10" : "text-edusync-muted hover:text-edusync-blue"
+                  )}
+                >
+                  <Icon className="w-5 h-5 mb-0.5" />
+                  <span className="text-[9px] font-bold tracking-wider uppercase">{item.label}</span>
+                </div>
+                {/* Indikator Titik Aktif */}
+                {isActive && (
+                  <span className="absolute bottom-[-4px] w-1 h-1 rounded-full bg-edusync-blue animate-pulse" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </div>
   );
 }
